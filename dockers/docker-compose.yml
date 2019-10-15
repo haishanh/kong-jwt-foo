@@ -1,0 +1,30 @@
+version: '3'
+services:
+  kong:
+    image: kong:1.3.0-alpine
+    depends_on:
+      - postgres
+    volumes:
+      - .:/tmp/startup
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=postgres
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001
+    command: "sh /tmp/startup/wait-for-postgres.sh"
+    ports:
+      - 8001:8001 # admin
+      - 8000:8000 # proxy
+    networks:
+      - compose-net-kong-jwt-foo
+  postgres:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=kong
+      - POSTGRES_DB=kong
+    ports:
+      - 5432:5432
+    networks:
+      - compose-net-kong-jwt-foo
+
+networks:
+  compose-net-kong-jwt-foo: null
