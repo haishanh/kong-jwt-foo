@@ -1,15 +1,18 @@
-version: '3'
+# see also https://docs.konghq.com/install/docker/
+version: "3"
 services:
   kong:
-    image: kong:1.3.0-alpine
+    image: kong:2.2.0-alpine
     depends_on:
       - postgres
     volumes:
       - .:/tmp/startup
     environment:
-      - KONG_DATABASE=postgres
-      - KONG_PG_HOST=postgres
-      - KONG_ADMIN_LISTEN=0.0.0.0:8001
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: postgres
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
     command: "sh /tmp/startup/wait-for-postgres.sh"
     ports:
       - 8001:8001 # admin
@@ -17,14 +20,15 @@ services:
     networks:
       - compose-net-kong-jwt-foo
   postgres:
-    image: postgres:9.6
+    image: postgres:13-alpine
     environment:
-      - POSTGRES_USER=kong
-      - POSTGRES_DB=kong
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
     ports:
       - 5432:5432
     networks:
       - compose-net-kong-jwt-foo
 
 networks:
-  compose-net-kong-jwt-foo: null
+  compose-net-kong-jwt-foo:

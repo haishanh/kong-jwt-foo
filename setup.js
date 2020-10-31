@@ -6,7 +6,6 @@ const debug = require('debug')('app:setup');
 
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
-// https://github.com/auth0/node-jsonwebtoken
 
 const sign = util.promisify(jwt.sign);
 const writeFile = util.promisify(fs.writeFile);
